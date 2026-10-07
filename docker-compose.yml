@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: casinocore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-casinocore}
+      POSTGRES_USER: ${POSTGRES_USER:-casinocore_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-casinocore_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-casinocore_user} -d ${POSTGRES_DB:-casinocore}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: casinocore-backend
+    restart: unless-stopped
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME:-CasinoCore}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      POSTGRES_SERVER: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-casinocore}
+      POSTGRES_USER: ${POSTGRES_USER:-casinocore_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-casinocore_password}
+      POSTGRES_ECHO: "false"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+    name: casinocore_postgres_data

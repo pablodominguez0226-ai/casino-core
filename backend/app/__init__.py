@@ -1,0 +1,1 @@
+"""CasinoCore application package."""
