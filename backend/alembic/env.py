@@ -9,7 +9,32 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from app.core.config import settings
 from app.core.database import Base
 # Import all models to ensure they are registered with Base.metadata for autogenerate
-from app.modules.operators.models import Operator  # noqa: F401
+from app.modules.operators.models import Operator, OperatorGameConfig  # noqa: F401
+from app.modules.identity.models import (  # noqa: F401
+    Permission,
+    PlayerProfile,
+    RefreshToken,
+    Role,
+    RolePermission,
+    User,
+    UserRole,
+)
+from app.modules.wallet.models import (  # noqa: F401
+    IdempotencyRecord,
+    LedgerEntry,
+    Wallet,
+)
+from app.modules.gaming.models import (  # noqa: F401
+    Game,
+    GameRound,
+    GameSession,
+)
+from app.modules.responsible.models import (  # noqa: F401
+    KycProfile,
+    PlayerLimit,
+    SelfExclusion,
+)
+from app.modules.audit.models import AuditLogRecord  # noqa: F401
 
 config = context.config
 

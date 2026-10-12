@@ -1,0 +1,13 @@
+frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: casinocore-frontend
+    restart: always
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
